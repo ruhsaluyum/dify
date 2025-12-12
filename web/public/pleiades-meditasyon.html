@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pleiades Meditasyon Sistemi</title>
+  <style>
+    :root {
+      --bg: #0b1021;
+      --card: rgba(255, 255, 255, 0.04);
+      --accent: #7df9ff;
+      --accent-2: #b388ff;
+      --text: #e9ecf5;
+      --muted: #b2b7c9;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+      color: var(--text);
+      background: radial-gradient(circle at 20% 20%, rgba(125, 249, 255, 0.05), transparent 25%),
+                  radial-gradient(circle at 80% 0%, rgba(179, 136, 255, 0.08), transparent 28%),
+                  radial-gradient(circle at 60% 80%, rgba(255, 255, 255, 0.06), transparent 30%),
+                  var(--bg);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .grid-bg {
+      position: fixed;
+      inset: 0;
+      background-image: linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+      background-size: 120px 120px;
+      mask-image: radial-gradient(circle at center, rgba(0,0,0,0.6), transparent 70%);
+      pointer-events: none;
+      animation: gridFloat 12s ease-in-out infinite alternate;
+      z-index: 0;
+    }
+
+    @keyframes gridFloat {
+      from { transform: translate3d(-12px, -10px, 0) scale(1.02); }
+      to { transform: translate3d(12px, 10px, 0) scale(1.05); }
+    }
+
+    header {
+      position: relative;
+      padding: 72px 24px 32px;
+      max-width: 1080px;
+      margin: 0 auto;
+      text-align: center;
+      z-index: 1;
+    }
+
+    h1 {
+      margin: 0 0 12px;
+      font-size: clamp(2rem, 4vw + 1rem, 3.75rem);
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+
+    .subtitle {
+      margin: 0;
+      color: var(--muted);
+      font-size: 1.05rem;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      margin-bottom: 18px;
+      color: var(--accent);
+      background: rgba(125, 249, 255, 0.07);
+      border: 1px solid rgba(125, 249, 255, 0.25);
+      border-radius: 999px;
+      text-transform: uppercase;
+      font-weight: 600;
+      font-size: 0.9rem;
+      letter-spacing: 0.08em;
+      box-shadow: 0 0 20px rgba(125, 249, 255, 0.15);
+      animation: pulse 2.8s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 16px rgba(125, 249, 255, 0.28), 0 0 40px rgba(179, 136, 255, 0.15); }
+      50% { box-shadow: 0 0 30px rgba(125, 249, 255, 0.5), 0 0 60px rgba(179, 136, 255, 0.3); }
+    }
+
+    .content {
+      position: relative;
+      max-width: 1080px;
+      margin: 0 auto 80px;
+      padding: 0 24px 32px;
+      display: grid;
+      gap: 20px;
+      z-index: 1;
+    }
+
+    section {
+      background: var(--card);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 18px;
+      padding: 22px 24px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+      backdrop-filter: blur(6px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    section::before {
+      content: "";
+      position: absolute;
+      width: 180px;
+      height: 180px;
+      background: radial-gradient(circle, rgba(125, 249, 255, 0.15), transparent 65%);
+      top: -60px;
+      right: -60px;
+      filter: blur(8px);
+      opacity: 0.8;
+      animation: float 9s ease-in-out infinite alternate;
+      pointer-events: none;
+    }
+
+    section h2 {
+      margin-top: 0;
+      margin-bottom: 10px;
+      color: var(--accent);
+      letter-spacing: 0.02em;
+    }
+
+    p { line-height: 1.65; }
+
+    .flex-cols {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      padding: 14px 16px;
+      position: relative;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    .card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(125, 249, 255, 0.08), rgba(179, 136, 255, 0.06));
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      z-index: -1;
+    }
+
+    .card:hover::after { opacity: 1; }
+    .card strong { color: var(--accent); }
+
+    @keyframes float {
+      from { transform: translate3d(0, 0, 0); }
+      to { transform: translate3d(-10px, 10px, 0); }
+    }
+
+    .timeline {
+      display: grid;
+      gap: 12px;
+      margin-top: 12px;
+      position: relative;
+      padding-left: 14px;
+    }
+
+    .timeline::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 6px;
+      bottom: 6px;
+      width: 2px;
+      background: linear-gradient(var(--accent), var(--accent-2));
+      opacity: 0.6;
+    }
+
+    .timeline-item {
+      position: relative;
+      padding-left: 16px;
+    }
+
+    .timeline-item::before {
+      content: "";
+      position: absolute;
+      left: -6px;
+      top: 8px;
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      background: radial-gradient(circle, var(--accent) 0%, var(--accent-2) 70%);
+      box-shadow: 0 0 12px rgba(125, 249, 255, 0.6);
+      animation: twinkle 3.6s ease-in-out infinite;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { transform: scale(0.9); opacity: 0.8; }
+      50% { transform: scale(1.1); opacity: 1; }
+    }
+
+    .meta {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .pill {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 0.92rem;
+      color: var(--muted);
+    }
+
+    footer {
+      max-width: 1080px;
+      margin: 0 auto 48px;
+      padding: 0 24px;
+      text-align: center;
+      color: var(--muted);
+      z-index: 1;
+      position: relative;
+    }
+
+    .orbital {
+      position: absolute;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      border: 1px dashed rgba(125, 249, 255, 0.2);
+      top: -40px;
+      left: -80px;
+      animation: orbit 18s linear infinite;
+      filter: blur(0.4px);
+      opacity: 0.6;
+    }
+
+    .orbital::after {
+      content: "";
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--accent);
+      top: 0;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 14px rgba(125, 249, 255, 0.5);
+    }
+
+    @keyframes orbit {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 640px) {
+      header { padding-top: 56px; }
+      section { padding: 18px 16px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="grid-bg"></div>
+  <header>
+    <div class="orbital" aria-hidden="true"></div>
+    <div class="badge">Pleiades Meditasyon Sistemi</div>
+    <h1>Pleiades Meditasyon Sistemi</h1>
+    <p class="subtitle">Beden, Bilinç ve Gizli Zekâ Üzerine Bütüncül Bir Yaklaşım</p>
+  </header>
+
+  <main class="content">
+    <section>
+      <h2>Giriş</h2>
+      <p>
+        Pleiades Meditasyon Sistemi, klasik meditasyon anlayışlarının ötesine geçen, zihni susturmaya çalışmak yerine <strong>bedenin gizli zekâsını uyandırmayı</strong> merkeze alan özgün ve derinlikli bir bilinç çalışmasıdır. Bu sistem, insanı yalnızca düşünen bir varlık olarak değil; hisseden, algılayan, hatırlayan ve kendi kendini düzenleyebilen bütüncül bir organizma olarak ele alır.
+      </p>
+      <p>
+        Modern dünyada meditasyon çoğu zaman rahatlama, stres azaltma veya zihinsel odaklanma aracı olarak sunulmaktadır. Oysa Pleiades Meditasyon Sistemi, meditasyonu bir “rahatlama tekniği” olarak değil, <strong>bilinçaltı kayıtların çözülmesine ve bedensel dönüşüme alan açan bir süreç</strong> olarak tanımlar.
+      </p>
+    </section>
+
+    <section>
+      <h2>1. Pleiades Meditasyon Sistemi Nedir?</h2>
+      <div class="flex-cols">
+        <div class="card">
+          <p>
+            Pleiades Meditasyon Sistemi; nefes, ses, ritim, beden farkındalığı ve bilinç gözlemini birlikte kullanan, çok katmanlı bir dönüşüm sistemidir. Bu sistemde amaç, zihni kontrol altına almak değil; zihnin geri çekilmesine izin vererek bedenin doğal düzenleyici zekâsını devreye sokmaktır.
+          </p>
+        </div>
+        <div class="card">
+          <p>
+            Pleiades yaklaşımında beden pasif değildir. Aksine, bilinçaltı kayıtların, duygusal izlerin ve epigenetik aktarımın taşındığı ana alan bedendir. Bu nedenle gerçek dönüşüm, düşünce düzeyinde değil; <strong>bedensel çözülme ve sinir sistemi regülasyonu</strong> yoluyla gerçekleşir.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>2. Sistemin Kurucusu: Şeref Tolga Kuralay</h2>
+      <p>
+        Pleiades Meditasyon Sistemi, Şeref Tolga Kuralay tarafından keşfedilmiş ve geliştirilmiştir. Kuralay’ın çalışmaları, insan bilincini yalnızca zihinsel farkındalıkla değil; beden, bilinçaltı ve sinir sistemi bütünlüğü içinde ele alır.
+      </p>
+      <p>
+        Bu sistem, yıllar içinde yapılan uygulamalar, bireysel deneyimler ve derin gözlemler sonucunda şekillenmiştir. Pleiades, herhangi bir öğretiyi kopyalamaz; kendi içsel keşif sürecinden doğmuş, özgün bir bilinç dönüşüm yaklaşımı sunar.
+      </p>
+      <div class="meta">
+        <span class="pill">Özgün yaklaşım</span>
+        <span class="pill">Bütüncül gözlem</span>
+        <span class="pill">Deneyime dayalı</span>
+      </div>
+    </section>
+
+    <section>
+      <h2>3. Bedenin Gizli Zekâsı ve Pleiades Yaklaşımı</h2>
+      <div class="timeline">
+        <div class="timeline-item">
+          <p>
+            Pleiades Meditasyon Sistemi’nin merkezinde “bedenin gizli zekâsı” kavramı yer alır. Bu kavram, bedenin bilinçli zihne ihtiyaç duymadan algılayabilme, kaydedebilme ve kendini düzenleyebilme kapasitesini ifade eder.
+          </p>
+        </div>
+        <div class="timeline-item">
+          <p>
+            Sinir sistemi, fasya ağı, hücresel hafıza ve elektromanyetik alan birlikte çalışarak bedenin bu zekâsını oluşturur. Meditasyon sırasında ortaya çıkan istemsiz hareketler, titremeler, duygusal boşalmalar veya nefes değişimleri; sistemin bozulması değil, <strong>bedenin çözülmeye başlamasının doğal işaretleridir</strong>.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>4. Kapılar Sistemi ve Bilincin Katmanları</h2>
+      <p>
+        Pleiades Meditasyon Sistemi, bilincin katman katman açıldığı “Kapılar” sistemiyle ilerler. Her kapı, bireyin bilinçaltında farklı bir alanla yüzleşmesini sağlar. Bu yüzleşme zihinsel analizle değil; bedensel farkındalık ve deneyim yoluyla gerçekleşir.
+      </p>
+      <p>
+        Kapılar sistemi, nefs mertebeleriyle de paralel ilerler. Kişi, her kapıda farklı bir savunma mekanizması, gölge yön veya bastırılmış duygu ile karşılaşır. Amaç bu alanları düzeltmek değil; <strong>görünür kılmak ve çözülmeye izin vermektir</strong>.
+      </p>
+    </section>
+
+    <section>
+      <h2>5. Gölge Benlik Çalışmaları</h2>
+      <p>
+        Pleiades yaklaşımında gölge benlik, bastırılmış ya da kabul edilmemiş kişilik parçalarını ifade eder. Bu parçalar çoğu zaman zihinsel olarak bilinmez; ancak bedensel tepkilerle kendini gösterir.
+      </p>
+      <p>
+        Tekrarlayan ilişki döngüleri, açıklanamayan bedensel tepkiler veya duygusal dalgalanmalar, gölge alanların işaretleri olabilir. Pleiades Meditasyon Sistemi, bu alanları analiz etmek yerine, <strong>bedenin bu yükleri boşaltmasına alan açar</strong>.
+      </p>
+    </section>
+
+    <section>
+      <h2>6. Sinir Sistemi ve Bilinç Regülasyonu</h2>
+      <div class="flex-cols">
+        <div class="card">
+          <p>
+            Pleiades çalışmalarında sinir sistemi regülasyonu temel bir unsurdur. Otonom sinir sisteminin sempatik ve parasempatik dengesi, bireyin güvenlik algısını doğrudan etkiler.
+          </p>
+        </div>
+        <div class="card">
+          <p>
+            Meditasyon sürecinde nefes ritimleri, ses ve beden farkındalığı aracılığıyla bedenin güvenlik algısı yeniden yapılandırılır. Güven hissi oluştuğunda, bilinçaltı kayıtlar çözülmeye başlar.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>7. Sürecin Doğası: Sonuç Değil Dönüşüm</h2>
+      <p>
+        Pleiades Meditasyon Sistemi herhangi bir sonuç vaat etmez. Çünkü bu sistemin amacı belirli deneyimler yaşatmak değil; <strong>kişinin kendi içsel sürecine alan açmasını sağlamaktır</strong>.
+      </p>
+      <p>
+        Her bireyin deneyimi farklıdır. Aynı uygulama, iki kişide tamamen farklı bedensel ve duygusal süreçler başlatabilir. Bu farklılık, sistemin zayıflığı değil; aksine, beden zekâsının kişiye özgü çalışmasının doğal sonucudur.
+      </p>
+    </section>
+
+    <section>
+      <h2>Sonuç</h2>
+      <p>
+        Pleiades Meditasyon Sistemi, meditasyonu bir teknik olmaktan çıkarıp bir <strong>bilinçle temas hâli</strong>ne dönüştürür. Bu temas, zihnin kontrolünden uzak, bedenin rehberliğinde gerçekleşir.
+      </p>
+      <p>
+        Gerçek dönüşüm, zorlamakla değil; izin vermekle başlar. Pleiades, bu izni hatırlatan ve bedenin konuşmasına alan açan bir yolculuktur.
+      </p>
+    </section>
+  </main>
+
+  <footer>
+    <p>Bu sayfa, Pleiades Meditasyon Sistemi metninin özgün hâlini görselleştirmek için hazırlanmış statik bir simülasyondur.</p>
+  </footer>
+</body>
+</html>
